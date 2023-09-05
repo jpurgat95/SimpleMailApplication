@@ -3,6 +3,7 @@ global using SimpleMailApp.WebAssembly.Services.Contracts;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SimpleMailApp.WebAssembly;
+using SimpleMailApp.WebAssembly.Services;
 
 namespace SimpleMailApp.WebAssembly
 {
@@ -18,7 +19,7 @@ namespace SimpleMailApp.WebAssembly
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7016/") });
 
             //DI
-            builder.Services.AddScoped<IEmailService, IEmailService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             await builder.Build().RunAsync();
         }

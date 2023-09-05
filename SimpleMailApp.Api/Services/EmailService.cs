@@ -2,6 +2,7 @@
 using MimeKit.Text;
 using MimeKit;
 using SimpleMailApp.Api.Services.Contracts;
+using MailKit.Net.Smtp;
 
 namespace SimpleMailApp.Api.Services;
 
