@@ -1,4 +1,5 @@
 global using SimpleMail.Lib;
+global using SimpleMailApp.WebAssembly.Services.Contracts;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SimpleMailApp.WebAssembly;
@@ -15,6 +16,9 @@ namespace SimpleMailApp.WebAssembly
 
             //HttpClient address added
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7016/") });
+
+            //DI
+            builder.Services.AddScoped<IEmailService, IEmailService>();
 
             await builder.Build().RunAsync();
         }
