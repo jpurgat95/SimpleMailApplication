@@ -13,7 +13,7 @@ public class IndexBase : ComponentBase
         {
             var test = new EmailDto
             {
-                To = "cassandre.goodwin@ethereal.email",
+                From = "bob@marley.weed",
                 Subject = "Testowy temat",
                 Body = "Testowa wiadomość",
             };
