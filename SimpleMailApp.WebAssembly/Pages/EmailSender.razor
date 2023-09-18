@@ -1,0 +1,82 @@
+﻿@page "/"
+@inherits EmailSenderBase
+@using Radzen
+@using System.Text.Json
+
+<PageTitle>Email Sender</PageTitle>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <RadzenTemplateForm TItem="EmailDto" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+                <RadzenFieldset TextStyle="TextStyle.Subtitle1" Text="Your email address">
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="Enter your email address:" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Name="Email" @bind-Value=@model.From class="w-100" />
+                            <RadzenRequiredValidator Component="Email" Text="Email is required" Popup=@popup Style="position: absolute" />
+                            <RadzenEmailValidator Component="Email" Text="Provide a valid email address" Popup=@popup Style="position: absolute" />
+                        </div>
+                    </div>
+                </RadzenFieldset>
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Email subject:</RadzenText>
+                    <RadzenTextArea Placeholder="Enter your message's subject here..." MaxLength="100" Change=@(args => OnChange(args, "Email subject:")) @bind-Value=@model.Subject class="w-100" />
+                </RadzenCard>
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Your message:</RadzenText>
+                    <RadzenTextArea Placeholder="Enter your message: here..." Change=@(args => OnChange(args, "Message:")) @bind-Value=@model.Body class="w-100" />
+                </RadzenCard>
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="(()=> SendEmail())"></RadzenButton>
+            </RadzenTemplateForm>
+        </div>
+    </div>
+@*     <div class="container my-4">
+        <div class="row">
+            <div class="col">
+                <RadzenCard class="w-100 mb-4">
+                    <RadzenCheckBox @bind-Value=@popup Name="popup"></RadzenCheckBox>
+                    <RadzenLabel Text="Display validators as popup" For="popup" Style="margin-left: 8px; vertical-align: middle;" />
+                </RadzenCard>
+            </div>
+        </div>
+
+    </div> *@
+</div>
+
+
+
+@code {
+    // string value;
+
+    // void OnChange(string value, string name)
+    // {
+    //     Console.WriteLine($"{name} value changed to {value}");
+    // }
+    // class Model
+    // {
+    //     public string Email { get; set; }
+    // }
+
+    // bool popup;
+
+    // Model model = new Model();
+
+    // void Log(string eventName, string value)
+    // {
+    //     Console.WriteLine($"{eventName}: {value}");
+    // }
+
+    // void OnSubmit(Model model)
+    // {
+    //     Log("Submit", JsonSerializer.Serialize(model, new JsonSerializerOptions() { WriteIndented = true }));
+    // }
+
+    // void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    // {
+    //     Log("InvalidSubmit", JsonSerializer.Serialize(args, new JsonSerializerOptions() { WriteIndented = true }));
+    // }
+}
