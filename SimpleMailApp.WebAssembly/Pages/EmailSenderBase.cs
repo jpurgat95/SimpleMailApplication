@@ -1,6 +1,7 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Radzen;
+using Radzen.Blazor;
 using System.Text.Json;
 
 namespace SimpleMailApp.WebAssembly.Pages;
@@ -18,13 +19,22 @@ public class EmailSenderBase : ComponentBase
     {
         try
         {
-            EmailSender.SendEmail(model);
-            ToastService.ShowSuccess("Messeage sent, sir!");
-
-            var timer = new Timer(new TimerCallback(_ =>
+            var check = model.From;
+            if(check.Contains("@") && check.Contains(".") ) 
             {
-                NavigationManager.NavigateTo("", forceLoad: true);
-            }), null, 3000, 3000);
+                EmailSender.SendEmail(model);
+                ToastService.ShowSuccess("Messeage sent, sir!");
+
+                var timer = new Timer(new TimerCallback(_ =>
+                {
+                    NavigationManager.NavigateTo("", forceLoad: true);
+                }), null, 3000, 3000);
+            }
+            else
+            {
+                ToastService.ShowError("Wrong email addres, sir!");
+            }
+
         }
         catch (Exception)
         {
@@ -39,7 +49,7 @@ public class EmailSenderBase : ComponentBase
         Console.WriteLine($"{name} value changed to {value}");
     }
 
-    public bool popup;
+    public bool popup = true;
 
     public EmailDto model = new EmailDto();
 
