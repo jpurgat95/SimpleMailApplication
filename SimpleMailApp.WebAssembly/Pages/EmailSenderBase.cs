@@ -1,7 +1,5 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using Radzen;
-using Radzen.Blazor;
 using System.Text.Json;
 
 namespace SimpleMailApp.WebAssembly.Pages;

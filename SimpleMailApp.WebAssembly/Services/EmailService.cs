@@ -1,6 +1,4 @@
-﻿using SimpleMail.Lib;
-using SimpleMailApp.WebAssembly.Services.Contracts;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 namespace SimpleMailApp.WebAssembly.Services;
 
