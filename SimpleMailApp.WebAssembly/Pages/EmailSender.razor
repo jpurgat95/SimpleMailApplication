@@ -8,7 +8,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="EmailDto" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+            <RadzenTemplateForm TItem="EmailDto" Data=@model>
                 <RadzenFieldset TextStyle="TextStyle.Subtitle1" Text="Your email address:">
                     <div class="row mb-5">
                         <div class="col-md-4" style="align-self: center;">
@@ -24,14 +24,15 @@
                 </RadzenFieldset>
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Email subject:</RadzenText>
-                    <RadzenTextArea Placeholder="Enter your message's subject here..." MaxLength="100" Change=@(args => OnChange(args, "Email subject:")) @bind-Value=@model.Subject class="w-100" />
+                    <RadzenTextArea Placeholder="Enter your message's subject here..." MaxLength="100" @bind-Value=@model.Subject class="w-100" />
                 </RadzenCard>
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Your message:</RadzenText>
-                    <RadzenTextArea Placeholder="Enter your message here..." Change=@(args => OnChange(args, "Message:")) @bind-Value=@model.Body class="w-100" />
+                    <RadzenTextArea Placeholder="Enter your message here..."  @bind-Value=@model.Body class="w-100" />
                 </RadzenCard>
                 <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="(()=> SendEmail())"></RadzenButton>
             </RadzenTemplateForm>
         </div>
     </div>
 </div>
+

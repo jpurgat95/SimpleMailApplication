@@ -12,13 +12,15 @@ public class EmailSenderBase : ComponentBase
     IToastService ToastService { get; set; }
     [Inject]
     NavigationManager NavigationManager { get; set; }
+    public bool popup = true;
 
+    public EmailDto model = new EmailDto();
     protected async Task SendEmail()
     {
         try
         {
-            var check = model.From;
-            if(check.Contains("@") && check.Contains(".") ) 
+            var emailAddres = model.From;
+            if(emailAddres.Contains("@") && emailAddres.Contains(".") )
             {
                 EmailSender.SendEmail(model);
                 ToastService.ShowSuccess("Messeage sent, sir!");
@@ -39,30 +41,5 @@ public class EmailSenderBase : ComponentBase
 
             throw;
         }
-    }
-    public string value;
-
-    public void OnChange(string value, string name)
-    {
-        Console.WriteLine($"{name} value changed to {value}");
-    }
-
-    public bool popup = true;
-
-    public EmailDto model = new EmailDto();
-
-    public void Log(string eventName, string value)
-    {
-        Console.WriteLine($"{eventName}: {value}");
-    }
-
-    public void OnSubmit(EmailDto model)
-    {
-        Log("Submit", JsonSerializer.Serialize(model, new JsonSerializerOptions() { WriteIndented = true }));
-    }
-
-    public void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
-    {
-        Log("InvalidSubmit", JsonSerializer.Serialize(args, new JsonSerializerOptions() { WriteIndented = true }));
     }
 }
