@@ -15,7 +15,7 @@
                             <RadzenLabel Text="Enter email address:" />
                         </div>
                         <div class="col">
-                            <RadzenTextBox style="display: block" Name="Email" @bind-Value=@model.From class="w-100" />
+                            <RadzenTextBox style="display: block" Name="Email" @bind-Value=@model.To class="w-100" />
                             <RadzenRequiredValidator Component="Email" Text="Email is required" Popup=@popup Style="position: absolute" />
                             <RadzenEmailValidator Component="Email" Text="Provide a valid email address" Popup=@popup Style="position: absolute" />
                             <RadzenCheckBox @bind-Value=@popup Name="popup" Visible="false"></RadzenCheckBox>

@@ -19,7 +19,7 @@ public class EmailSenderBase : ComponentBase
     {
         try
         {
-            var emailAddres = model.From;
+            var emailAddres = model.To;
             if(emailAddres.Contains("@") && emailAddres.Contains(".") )
             {
                 EmailSender.SendEmail(model);
