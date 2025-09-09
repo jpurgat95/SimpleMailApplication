@@ -15,7 +15,7 @@ public class EmailController : ControllerBase
         _emailService = emailService;
     }
     [HttpPost]
-    public IActionResult SendEmail(EmailDto request)
+    public IActionResult SendEmail([FromBody] EmailDto request)
     {
         _emailService.SendEmail(request);
         return Ok();

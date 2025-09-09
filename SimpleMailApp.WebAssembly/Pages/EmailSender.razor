@@ -1,10 +1,7 @@
 ﻿@page "/"
 @inherits EmailSenderBase
 @using System.Text.Json
-
 <PageTitle>Email Sender</PageTitle>
-
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
@@ -28,11 +25,16 @@
                 </RadzenCard>
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Your message:</RadzenText>
-                    <RadzenTextArea Placeholder="Enter your message here..."  @bind-Value=@model.Body class="w-100" />
+                    <RadzenTextArea Placeholder="Enter your message here..." @bind-Value=@model.Body class="w-100" />
                 </RadzenCard>
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="(()=> SendEmail())"></RadzenButton>
+
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Attachments:</RadzenText>
+                    <InputFile OnChange="OnInputFileChange" multiple />
+                </RadzenCard>
+
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="(() => SendEmail())"></RadzenButton>
             </RadzenTemplateForm>
         </div>
     </div>
 </div>
-

@@ -2,5 +2,5 @@
 
 public interface IEmailService
 {
-    Task<EmailDto> SendEmail(EmailDto email);
+    Task SendEmail(EmailDto email);
 }
