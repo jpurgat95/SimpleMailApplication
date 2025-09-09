@@ -2,11 +2,13 @@
 @inherits EmailSenderBase
 @using System.Text.Json
 <PageTitle>Email Sender</PageTitle>
+<h1 class="app-header">Simple Mail Application</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
             <RadzenTemplateForm TItem="EmailDto" Data=@model>
-                <RadzenFieldset TextStyle="TextStyle.Subtitle1" Text="Your email address:">
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Your email address:</RadzenText>
                     <div class="row mb-5">
                         <div class="col-md-4" style="align-self: center;">
                             <RadzenLabel Text="Enter email address:" />
@@ -18,7 +20,7 @@
                             <RadzenCheckBox @bind-Value=@popup Name="popup" Visible="false"></RadzenCheckBox>
                         </div>
                     </div>
-                </RadzenFieldset>
+                </RadzenCard>
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Email subject:</RadzenText>
                     <RadzenTextArea Placeholder="Enter your message's subject here..." MaxLength="100" @bind-Value=@model.Subject class="w-100" />
@@ -27,13 +29,48 @@
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Your message:</RadzenText>
                     <RadzenTextArea Placeholder="Enter your message here..." @bind-Value=@model.Body class="w-100" />
                 </RadzenCard>
-
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Attachments:</RadzenText>
-                    <InputFile OnChange="OnInputFileChange" multiple />
+                    <InputFile id="hiddenFileInput" style="display:none" multiple OnChange="OnInputFileChange"
+                               accept=".jpg,.jpeg,.png,.pdf,.xlsx,.xls,.doc,.docx,.txt,.zip,.rar,.mp3,.mp4,.csv"
+                               maxAllowedFiles="50" />
+
+                    <RadzenButton Text="Choose files" Click="@TriggerFileInput" />
+                    @if (model.Attachments != null && model.Attachments.Any())
+                    {
+                        <div class="attachments-list" style="margin-top: 1rem;">
+                            <h5>Attachments:</h5>
+                            <button class="btn btn-sm btn-danger mb-2" @onclick="RemoveAllAttachments" type="button">
+                                Usuń wszystkie
+                            </button>
+                            <ul style="list-style: none; padding: 0;">
+                                @foreach (var attachment in model.Attachments)
+                                {
+                                    <li class="attachment-item" style="display: flex; align-items: center; margin-bottom: 0.3rem;">
+                                        <span style="flex-grow: 1;">
+                                            @attachment.FileName (@($"{(attachment.Content?.LongLength ?? 0) / 1024.0 / 1024.0:F2}") MB)
+                                        </span>
+                                        <button type="button" class="btn btn-link text-danger" title="Usuń" style="padding: 0 0.5rem;"
+                                                @onclick="() => RemoveAttachment(attachment)">
+                                            ✖
+                                        </button>
+                                    </li>
+                                }
+                            </ul>
+                            <div style="font-weight: 600; margin-top: 0.5rem;">
+                                Total size: @($"{TotalAttachmentsSizeMB:F2}") MB
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="margin-top: 1rem;">No attachments added.</p>
+                    }
                 </RadzenCard>
 
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="(() => SendEmail())"></RadzenButton>
+
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="@SendEmail" />
+
             </RadzenTemplateForm>
         </div>
     </div>
