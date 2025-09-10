@@ -32,10 +32,10 @@
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Attachments:</RadzenText>
                     <InputFile id="hiddenFileInput" style="display:none" multiple OnChange="OnInputFileChange"
-                               accept=".jpg,.jpeg,.png,.pdf,.xlsx,.xls,.doc,.docx,.txt,.zip,.rar,.mp3,.mp4,.csv"
-                               maxAllowedFiles="50" />
+                               accept=".jpg,.jpeg,.png,.pdf,.xlsx,.xls,.doc,.docx,.txt,.zip,.rar,.mp3,.mp4,.csv,.ppt,.pptx"
+                               maxAllowedFiles="10" />
 
-                    <RadzenButton Text="Choose files" Click="@TriggerFileInput" />
+                    <RadzenButton Text="Choose files - max 10 files at once" Click="@TriggerFileInput" />
                     @if (model.Attachments != null && model.Attachments.Any())
                     {
                         <div class="attachments-list" style="margin-top: 1rem;">
@@ -58,7 +58,7 @@
                                 }
                             </ul>
                             <div style="font-weight: 600; margin-top: 0.5rem;">
-                                Total size: @($"{TotalAttachmentsSizeMB:F2}") MB
+                                Total size: @($"{TotalAttachmentsSizeMB:F2}") MB / 20 MB
                             </div>
                         </div>
                     }

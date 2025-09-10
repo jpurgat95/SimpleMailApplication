@@ -27,7 +27,8 @@ namespace SimpleMailApp.WebAssembly.Pages
         // Lista dozwolonych rozszerzeń plików
         private readonly string[] allowedExtensions = new[]
         {
-            ".jpg", ".jpeg", ".png", ".pdf", ".xlsx", ".xls", ".doc", ".docx", ".txt",".zip", ".rar", ".mp4", ".mp3", ".csv"
+            ".jpg", ".jpeg", ".png", ".pdf", ".xlsx", ".xls", ".doc", ".docx", ".txt",".zip", 
+            ".rar", ".mp4", ".mp3", ".csv",".ppt", ".pptx"
         };
 
         protected async Task SendEmail()
@@ -68,41 +69,46 @@ namespace SimpleMailApp.WebAssembly.Pages
             if (model.Attachments == null)
                 model.Attachments = new List<EmailAttachmentDto>();
 
-            var allowedExtensions = new[]
-            {
-                ".jpg", ".jpeg", ".png", ".pdf", ".xlsx", ".xls", ".doc", ".docx", ".txt", ".zip", ".rar", ".mp4", ".mp3", ".csv"
-            };
-
-            const long maxSingleFileSize = 10 * 1024 * 1024;
-            const long maxTotalAttachmentSize = 20 * 1024 * 1024;
+            const int maxFiles = 10;
+            const long maxSingleFileSize = 10 * 1024 * 1024; // 10 MB
+            const long maxTotalSize = 20 * 1024 * 1024; // 20 MB
             long currentTotalSize = model.Attachments.Sum(a => a.Content?.LongLength ?? 0);
 
-            foreach (var file in e.GetMultipleFiles())
+            IReadOnlyList<IBrowserFile> selectedFiles;
+            try
             {
-                var extension = System.IO.Path.GetExtension(file.Name).ToLowerInvariant();
+                selectedFiles = e.GetMultipleFiles(maxFiles);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
 
-                if (!allowedExtensions.Contains(extension))
+            foreach (var file in selectedFiles)
+            {
+                if (model.Attachments.Count >= maxFiles)
                 {
-                    ToastService.ShowError($"File type {extension} is not supported.");
-                    continue;
+                    ToastService.ShowError($"You can add {maxFiles} files at once.");
+                    break;
                 }
 
                 if (file.Size > maxSingleFileSize)
                 {
-                    ToastService.ShowError($"File {file.Name} is too large. Max size is 10 MB.");
+                    ToastService.ShowError($"File {file.Name} is too big (max 10 MB).");
                     continue;
                 }
 
-                if (currentTotalSize + file.Size > maxTotalAttachmentSize)
+                if (currentTotalSize + file.Size > maxTotalSize)
                 {
-                    ToastService.ShowError($"Adding file {file.Name} would exceed total attachments size limit of 20 MB.");
-                    continue;
+                    ToastService.ShowError("Total files size limit exceeded (20 MB).");
+                    break;
                 }
 
                 try
                 {
                     var buffer = new byte[file.Size];
-                    using var stream = file.OpenReadStream(file.Size);
+                    using var stream = file.OpenReadStream(maxSingleFileSize);
                     int totalRead = 0;
                     while (totalRead < buffer.Length)
                     {
@@ -111,31 +117,26 @@ namespace SimpleMailApp.WebAssembly.Pages
                             break;
                         totalRead += read;
                     }
-
                     if (totalRead != buffer.Length)
                     {
-                        ToastService.ShowError($"Error reading full content of file {file.Name}.");
+                        ToastService.ShowError($"Error during files loading: '{file.Name}'.");
                         continue;
                     }
-
                     model.Attachments.Add(new EmailAttachmentDto
                     {
                         FileName = file.Name,
                         Content = buffer,
                         ContentType = file.ContentType
                     });
-
                     currentTotalSize += file.Size;
-
-                    Console.WriteLine($"Processing file: {file.Name} Size: {file.Size}");
+                    ToastService.ShowSuccess($"File '{file.Name}' added.");
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ex)
                 {
-                    ToastService.ShowError($"Error reading file {file.Name}: {ex.Message}");
+                    ToastService.ShowError($"Error reading file: '{file.Name}': {ex.Message}");
                 }
             }
         }
-
         public async Task TriggerFileInput()
         {
             await JSRuntime.InvokeVoidAsync("triggerFileInputClick");
