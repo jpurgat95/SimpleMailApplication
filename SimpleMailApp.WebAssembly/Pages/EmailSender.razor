@@ -41,7 +41,7 @@
                         <div class="attachments-list" style="margin-top: 1rem;">
                             <h5>Attachments:</h5>
                             <button class="btn btn-sm btn-danger mb-2" @onclick="RemoveAllAttachments" type="button">
-                                Usuń wszystkie
+                                DELETE ALL
                             </button>
                             <ul style="list-style: none; padding: 0;">
                                 @foreach (var attachment in model.Attachments)
@@ -50,7 +50,7 @@
                                         <span style="flex-grow: 1;">
                                             @attachment.FileName (@($"{(attachment.Content?.LongLength ?? 0) / 1024.0 / 1024.0:F2}") MB)
                                         </span>
-                                        <button type="button" class="btn btn-link text-danger" title="Usuń" style="padding: 0 0.5rem;"
+                                        <button type="button" class="btn btn-link text-danger" title="Delete" style="padding: 0 0.5rem;"
                                                 @onclick="() => RemoveAttachment(attachment)">
                                             ✖
                                         </button>
