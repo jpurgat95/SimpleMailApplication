@@ -2,11 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using SimpleMail.Lib; // zakładam, że EmailDto i EmailAttachmentDto są tutaj
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 
 namespace SimpleMailApp.WebAssembly.Pages
 {
@@ -91,6 +86,12 @@ namespace SimpleMailApp.WebAssembly.Pages
                 {
                     ToastService.ShowError($"You can add {maxFiles} files at once.");
                     break;
+                }
+                var extension = Path.GetExtension(file.Name)?.ToLowerInvariant();
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ToastService.ShowError($"File type '{extension}' not allowed.");
+                    continue;
                 }
 
                 if (file.Size > maxSingleFileSize)
