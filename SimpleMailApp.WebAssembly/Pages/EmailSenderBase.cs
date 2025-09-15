@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using System.Text.RegularExpressions;
 
 namespace SimpleMailApp.WebAssembly.Pages
 {
@@ -31,7 +32,7 @@ namespace SimpleMailApp.WebAssembly.Pages
             try
             {
                 var emailAddress = model.To;
-                if (!string.IsNullOrWhiteSpace(emailAddress) && emailAddress.Contains("@") && emailAddress.Contains("."))
+                if (IsValidEmail(emailAddress))
                 {
                     const long maxTotalAttachmentSize = 20 * 1024 * 1024; // 20 MB
                     long totalAttachmentSize = model.Attachments?.Sum(a => a.Content?.LongLength ?? 0) ?? 0;
@@ -160,6 +161,14 @@ namespace SimpleMailApp.WebAssembly.Pages
             {
                 model.Attachments.Clear();
             }
+        }
+        bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, pattern);
         }
     }
 }
