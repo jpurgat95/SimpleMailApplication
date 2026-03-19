@@ -21,6 +21,59 @@
                         </div>
                     </div>
                 </RadzenCard>
+
+                <!-- CC -->
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">CC:</RadzenText>
+                    <div class="d-flex gap-2 mb-2">
+                        <RadzenTextBox @bind-Value=@NewCcAddress Placeholder="Enter CC email address..." class="w-100" />
+                        <RadzenButton Text="Add" Click="@AddCc" ButtonStyle="ButtonStyle.Secondary" />
+                    </div>
+                    @if (model.Cc.Any())
+                    {
+                        <ul style="list-style: none; padding: 0;">
+                            @foreach (var cc in model.Cc)
+                            {
+                                <li style="display: flex; align-items: center; margin-bottom: 0.3rem;">
+                                    <span style="flex-grow: 1;">@cc</span>
+                                    <button type="button" class="btn btn-link text-danger" style="padding: 0 0.5rem;"
+                                            @onclick="() => RemoveCc(cc)">✖</button>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p style="color: gray; font-size: 0.85rem;">No CC recipients added.</p>
+                    }
+                </RadzenCard>
+
+                <!-- BCC -->
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">BCC:</RadzenText>
+                    <div class="d-flex gap-2 mb-2">
+                        <RadzenTextBox @bind-Value=@NewBccAddress Placeholder="Enter BCC email address..." class="w-100" />
+                        <RadzenButton Text="Add" Click="@AddBcc" ButtonStyle="ButtonStyle.Secondary" />
+                    </div>
+                    @if (model.Bcc.Any())
+                    {
+                        <ul style="list-style: none; padding: 0;">
+                            @foreach (var bcc in model.Bcc)
+                            {
+                                <li style="display: flex; align-items: center; margin-bottom: 0.3rem;">
+                                    <span style="flex-grow: 1;">@bcc</span>
+                                    <button type="button" class="btn btn-link text-danger" style="padding: 0 0.5rem;"
+                                            @onclick="() => RemoveBcc(bcc)">✖</button>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p style="color: gray; font-size: 0.85rem;">No BCC recipients added.</p>
+                    }
+                </RadzenCard>
+
                 <RadzenCard>
                     <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Email subject:</RadzenText>
                     <RadzenTextArea Placeholder="Enter your message's subject here..." MaxLength="100" @bind-Value=@model.Subject class="w-100" />
@@ -34,15 +87,12 @@
                     <InputFile id="hiddenFileInput" style="display:none" multiple OnChange="OnInputFileChange"
                                accept=".jpg,.jpeg,.png,.pdf,.xlsx,.xls,.doc,.docx,.txt,.zip,.rar,.mp3,.mp4,.csv,.ppt,.pptx"
                                maxAllowedFiles="10" />
-
                     <RadzenButton Text="Choose files - max 10 files at once" Click="@TriggerFileInput" />
                     @if (model.Attachments != null && model.Attachments.Any())
                     {
                         <div class="attachments-list" style="margin-top: 1rem;">
                             <h5>Attachments:</h5>
-                            <button class="btn btn-sm btn-danger mb-2" @onclick="RemoveAllAttachments" type="button">
-                                DELETE ALL
-                            </button>
+                            <button class="btn btn-sm btn-danger mb-2" @onclick="RemoveAllAttachments" type="button">DELETE ALL</button>
                             <ul style="list-style: none; padding: 0;">
                                 @foreach (var attachment in model.Attachments)
                                 {
@@ -51,9 +101,7 @@
                                             @attachment.FileName (@($"{(attachment.Content?.LongLength ?? 0) / 1024.0 / 1024.0:F2}") MB)
                                         </span>
                                         <button type="button" class="btn btn-link text-danger" title="Delete" style="padding: 0 0.5rem;"
-                                                @onclick="() => RemoveAttachment(attachment)">
-                                            ✖
-                                        </button>
+                                                @onclick="() => RemoveAttachment(attachment)">✖</button>
                                     </li>
                                 }
                             </ul>
@@ -67,10 +115,18 @@
                         <p style="margin-top: 1rem;">No attachments added.</p>
                     }
                 </RadzenCard>
-
-
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.H3">Email Signature:</RadzenText>
+                    <p style="color: gray; font-size: 0.85rem;">
+                        Your signature will be automatically added at the bottom of every email.
+                    </p>
+                    <div id="quill-editor" style="min-height: 150px; background: white;"></div>
+                    <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                        <RadzenButton Text="💾 Save Signature" Click="@SaveSignature" ButtonStyle="ButtonStyle.Secondary" />
+                        <RadzenButton Text="🗑 Clear Signature" Click="@ClearSignature" ButtonStyle="ButtonStyle.Danger" />
+                    </div>
+                </RadzenCard>
                 <RadzenButton ButtonType="ButtonType.Submit" Text="Send Email" Click="@SendEmail" />
-
             </RadzenTemplateForm>
         </div>
     </div>

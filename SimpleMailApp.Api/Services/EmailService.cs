@@ -1,6 +1,5 @@
 ﻿using MailKit.Security;
 using MimeKit;
-using MimeKit.Text;
 using SimpleMailApp.Api.Services.Contracts;
 using MailKit.Net.Smtp;
 
@@ -20,18 +19,27 @@ namespace SimpleMailApp.Api.Services
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUsername").Value));
             email.To.Add(MailboxAddress.Parse(request.To));
+
+            if (request.Cc != null)
+                foreach (var cc in request.Cc)
+                    if (!string.IsNullOrWhiteSpace(cc))
+                        email.Cc.Add(MailboxAddress.Parse(cc));
+
+            if (request.Bcc != null)
+                foreach (var bcc in request.Bcc)
+                    if (!string.IsNullOrWhiteSpace(bcc))
+                        email.Bcc.Add(MailboxAddress.Parse(bcc));
+
             email.Subject = request.Subject;
 
             var builder = new BodyBuilder();
-            builder.HtmlBody = request.Body;
+            builder.HtmlBody = string.IsNullOrWhiteSpace(request.Signature)
+                ? request.Body
+                : $"{request.Body}<br/><br/><hr/>{request.Signature}";
 
             if (request.Attachments != null && request.Attachments.Any())
-            {
                 foreach (var attachment in request.Attachments)
-                {
                     builder.Attachments.Add(attachment.FileName, attachment.Content, ContentType.Parse(attachment.ContentType));
-                }
-            }
 
             email.Body = builder.ToMessageBody();
 

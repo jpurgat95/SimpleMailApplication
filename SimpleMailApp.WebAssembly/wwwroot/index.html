@@ -12,6 +12,7 @@
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 </head>
 <body>
     <div id="app">Loading...</div>
@@ -22,6 +23,46 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+    var quill;
+
+    function initQuill() {
+        if (!quill) {
+            quill = new Quill('#quill-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'font': [] }],
+                        [{ 'size': ['small', false, 'large', 'huge'] }],
+                        [{ 'align': [] }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+        }
+    }
+
+    function quillGetContent() {
+        if (quill) return quill.root.innerHTML;
+        return '';
+    }
+
+    function quillSetContent(html) {
+        if (quill) quill.root.innerHTML = html || '';
+    }
+
+    function localStorageSaveSignature(html) {
+        localStorage.setItem('emailSignature', html);
+    }
+
+    function localStorageGetSignature() {
+        return localStorage.getItem('emailSignature') || '';
+    }
+</script>
 </body>
 </html>
 <!--Code for 'Chose files' button-->
