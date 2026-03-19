@@ -8,13 +8,15 @@ namespace SimpleMailApp.Api.Services
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
+        private readonly IEmailHistoryService _history;
 
-        public EmailService(IConfiguration config)
+        public EmailService(IConfiguration config, IEmailHistoryService history)
         {
             _config = config;
+            _history = history;
         }
 
-        public void SendEmail(EmailDto request)
+        public async void SendEmail(EmailDto request)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUsername").Value));
@@ -48,6 +50,18 @@ namespace SimpleMailApp.Api.Services
             smtp.Authenticate(_config.GetSection("EmailUsername").Value, _config.GetSection("EmailPassword").Value);
             smtp.Send(email);
             smtp.Disconnect(true);
+
+            // Zapisz do historii
+            await _history.SaveAsync(new EmailHistoryEntry
+            {
+                To = request.To,
+                Cc = request.Cc ?? new List<string>(),
+                Bcc = request.Bcc ?? new List<string>(),
+                Subject = request.Subject,
+                Body = request.Body,
+                HasAttachments = request.Attachments != null && request.Attachments.Any(),
+                SentAt = DateTime.UtcNow
+            });
         }
     }
 }

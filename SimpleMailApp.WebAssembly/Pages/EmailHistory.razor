@@ -1,0 +1,59 @@
+@page "/history"
+@using SimpleMailApp.WebAssembly.Services.Contracts
+@inject IEmailHistoryClient HistoryClient
+
+<PageTitle>Email History</PageTitle>
+<h1 class="app-header">Sent Emails History</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            @if (_loading)
+            {
+                <p>Loading...</p>
+            }
+            else if (_entries == null || !_entries.Any())
+            {
+                <RadzenCard>
+                    <p>No emails sent yet.</p>
+                </RadzenCard>
+            }
+            else
+            {
+                <RadzenDataGrid Data="@_entries" TItem="EmailHistoryEntry" AllowSorting="true" AllowPaging="true" PageSize="10">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="EmailHistoryEntry" Property="SentAt" Title="Date" Width="160px" />
+                        <RadzenDataGridColumn TItem="EmailHistoryEntry" Property="To" Title="To" />
+                        <RadzenDataGridColumn TItem="EmailHistoryEntry" Title="CC">
+                            <Template Context="entry">
+                                @string.Join(", ", entry.Cc)
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="EmailHistoryEntry" Title="BCC">
+                            <Template Context="entry">
+                                @string.Join(", ", entry.Bcc)
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="EmailHistoryEntry" Property="Subject" Title="Subject" />
+                        <RadzenDataGridColumn TItem="EmailHistoryEntry" Title="Attachments">
+                            <Template Context="entry">
+                                @(entry.HasAttachments ? "✔" : "✖")
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<EmailHistoryEntry>? _entries;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _entries = await HistoryClient.GetAllAsync();
+        _loading = false;
+    }
+}

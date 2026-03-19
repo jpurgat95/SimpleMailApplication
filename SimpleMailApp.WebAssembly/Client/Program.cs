@@ -21,6 +21,7 @@ namespace SimpleMailApp.WebAssembly
 
             //DI
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IEmailHistoryClient, EmailHistoryClient>();
 
             //Toast Notification
             builder.Services.AddBlazoredToast();

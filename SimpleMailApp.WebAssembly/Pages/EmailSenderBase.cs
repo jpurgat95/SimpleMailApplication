@@ -27,20 +27,25 @@ namespace SimpleMailApp.WebAssembly.Pages
             ".txt", ".zip", ".rar", ".mp4", ".mp3", ".csv", ".ppt", ".pptx"
         };
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+protected override async Task OnInitializedAsync()
+{
+    _signatureLoaded = false;
+}
+
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (!_signatureLoaded)
+    {
+        _signatureLoaded = true;
+        await JSRuntime.InvokeVoidAsync("initQuill");
+        var saved = await LoadSignature();
+        if (!string.IsNullOrEmpty(saved))
         {
-            if (firstRender && !_signatureLoaded)
-            {
-                _signatureLoaded = true;
-                await JSRuntime.InvokeVoidAsync("initQuill");
-                var saved = await LoadSignature();
-                if (!string.IsNullOrEmpty(saved))
-                {
-                    model.Signature = saved;
-                    await JSRuntime.InvokeVoidAsync("quillSetContent", saved);
-                }
-            }
+            model.Signature = saved;
+            await JSRuntime.InvokeVoidAsync("quillSetContent", saved);
         }
+    }
+}
 
         // CC
         public void AddCc()
